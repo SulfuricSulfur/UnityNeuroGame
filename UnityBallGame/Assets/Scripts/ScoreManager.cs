@@ -6,7 +6,7 @@ public class ScoreManager : MonoBehaviour {
     // Use this for initialization
     private int initialScore;//the base score for the target
 	void Start () {
-        initialScore = 1000;//the target score starts off at 1000pts and decreases
+        initialScore = 1200;
 	}
 	
 	// Update is called once per frame
@@ -42,7 +42,7 @@ public class ScoreManager : MonoBehaviour {
     public void ResetTargetScore()
     {
         //returing the base target points
-        initialScore = 1000;
+        initialScore = 1200;
     }
 
     /// <summary>

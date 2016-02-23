@@ -56,7 +56,11 @@ public class ObjectSpawn : MonoBehaviour {
     private bool loadedScene;//loaded the final scene
 
 	// Use this for initialization
-	void Start () {
+
+        private int targetsIn = 0;//the number of targets that are in the cycle. There will
+    private double avgSec=0;//the average score of the player
+
+    void Start () {
 
         //trialKeeper = GameObject.Find("TrialSetter");
         //trialObj = trialKeeper.GetComponent<TrialObject>();
@@ -146,10 +150,7 @@ public class ObjectSpawn : MonoBehaviour {
 
     }
 
-    public int FinalScore()
-    {
-        return score;
-    }
+
 
     /// <summary>
     /// Choosing objects from the array and adding them to a list
@@ -163,7 +164,7 @@ public class ObjectSpawn : MonoBehaviour {
         {
             trialsLeft = 2;
         }
-        int targetsIn = 0;//the number of targets that are in the cycle. There will
+         targetsIn = 0;//the number of targets that are in the cycle. There will
         int numTar = Random.Range(1, trialsLeft + 1);//the number of possible targets there can be
         for (int f = 0; f < trialsLeft; f++)
         {
@@ -219,6 +220,9 @@ public class ObjectSpawn : MonoBehaviour {
         ballPoint = 0;
     }
 
+
+
+
     //used for spawning in the object
     public void SpawningObjects()
     {
@@ -262,7 +266,7 @@ public class ObjectSpawn : MonoBehaviour {
             if(scoreTimer==true)
             {
                 targetScore = scoring.TargetScore();
-                //Debug.Log(targetScore);
+
             }
             //if the space bar is pressed within the time the ball is on the screen
             if (Input.GetKey("space") && spacePressed == false && (time >= 0 && time <= 2))
@@ -272,6 +276,8 @@ public class ObjectSpawn : MonoBehaviour {
                 {
                     score += targetScore;//will increase score when they press it(more if faster)
                     spacePressed = true;
+                    scoreTimer =false;
+                    avgSec += targetScore;//the average seconds.
                     //this is for telling the user the tart was hit
                     hitT = hitTarget.GetComponent<Text>();
                     hitT.text = "WOW! You hit a target!";
@@ -306,6 +312,8 @@ public class ObjectSpawn : MonoBehaviour {
        
     }
 
+
+
     /// <summary>
     /// used for showing the final score
     /// </summary>
@@ -314,6 +322,12 @@ public class ObjectSpawn : MonoBehaviour {
     {
         return score;
     }
+    /// <summary>
+    /// returning the number of targets there were in that game
+    /// </summary>
+    /// <returns></returns>
+  
+
     
     /// <summary>
     /// The game has ended.
@@ -321,7 +335,11 @@ public class ObjectSpawn : MonoBehaviour {
     /// </summary>
     public void EndGame()
     {
+
+        avgSec = avgSec / (targetsIn );
         sTrack.SetScore(score);
+        sTrack.SetAverage(avgSec);//the average score
+        sTrack.SetNumTargets(targetsIn);
         Application.LoadLevel("FinishGame");
     }
 

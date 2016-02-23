@@ -6,6 +6,8 @@ public class ScoreTracker : MonoBehaviour {
     // Use this for initialization
 
     private int score;
+    private double avgSec;//the average seconds
+    private int numTargets;//the number of targets there were that round
     //ObjectSpawn spwnObj;//calling refrence to the score
     //GameObject gameScore;//game object of the thing that has the score refrence
     void Start () {
@@ -37,4 +39,25 @@ public class ScoreTracker : MonoBehaviour {
     {
         score = gameScore;
     }
+
+    public void SetAverage(double avg)
+    {
+        avgSec = avg;
+    }
+
+    public double ShowAverage()
+    {
+        return avgSec;
+    }
+
+    public void SetNumTargets(int numT)
+    {
+        numTargets = numT;
+    }
+    public int ShowTargetNum()
+    {
+        return numTargets;
+    }
+
+
 }
