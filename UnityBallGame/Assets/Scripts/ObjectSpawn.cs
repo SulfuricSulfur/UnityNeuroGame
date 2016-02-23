@@ -53,6 +53,8 @@ public class ObjectSpawn : MonoBehaviour {
     GameObject scoreHandle;
     ScoreTracker sTrack;
 
+    private bool loadedScene;//loaded the final scene
+
 	// Use this for initialization
 	void Start () {
 
@@ -69,7 +71,7 @@ public class ObjectSpawn : MonoBehaviour {
         //trialsLeft = 2;
         starting = (GameObject)Instantiate(spawnedObjs[index], new Vector3(0, 0, 0), target.transform.rotation);
         scoring = this.GetComponent<ScoreManager>();
-
+        loadedScene = false;
         hub = GameObject.Find("Canvas");
         scoreText = hub.GetComponent<Transform>().GetChild(0);
         shownTarget = hub.GetComponent<Transform>().GetChild(1);
@@ -109,12 +111,13 @@ public class ObjectSpawn : MonoBehaviour {
             //showScore.text = "Score: " + score;
 
         }
-        else if (ballPoint >= balls.Count)
+        else if (ballPoint >= balls.Count && loadedScene == false)
         {
             //game over code
             //send score to scoreHandler
-            sTrack.SetScore(score);
-            Application.LoadLevel("FinishGame");
+            loadedScene = true;
+            EndGame();
+
         }
 
         if (startDone == false)
@@ -152,7 +155,7 @@ public class ObjectSpawn : MonoBehaviour {
     /// </summary>
     void MakingCycle()
     {
-        Debug.Log("there are " + trialsLeft);
+        //Debug.Log("there are " + trialsLeft);
         if(trialsLeft == 0)//setting default number of trials to 2 trials
         {
             trialsLeft = 2;
@@ -205,7 +208,7 @@ public class ObjectSpawn : MonoBehaviour {
                     ballIndex.Add(GO);
                 }
             }
-            Debug.Log(balls.Count);
+            //Debug.Log(balls.Count);
             //refreshing the list
             ballIndex.Clear();
         }
@@ -300,6 +303,16 @@ public class ObjectSpawn : MonoBehaviour {
     public int ShowingScore()
     {
         return score;
+    }
+    
+    /// <summary>
+    /// The game has ended.
+    /// Moving scene to the final one.
+    /// </summary>
+    public void EndGame()
+    {
+        sTrack.SetScore(score);
+        Application.LoadLevel("FinishGame");
     }
 
    

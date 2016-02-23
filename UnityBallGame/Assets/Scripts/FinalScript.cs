@@ -9,7 +9,7 @@ public class FinalScript : MonoBehaviour {
     //this is for displaying the final score
     private int finalScore;
     GameObject scoreSet;
-    public GameObject hub;
+    private GameObject hub;
     Transform scoring;
     Text scoreText;
     
