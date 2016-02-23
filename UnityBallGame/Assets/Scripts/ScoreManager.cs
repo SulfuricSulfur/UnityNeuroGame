@@ -3,9 +3,10 @@ using System.Collections;
 
 public class ScoreManager : MonoBehaviour {
     //this is for adding/changing the score depending on the situation
-	// Use this for initialization
+    // Use this for initialization
+    private int initialScore;//the base score for the target
 	void Start () {
-	
+        initialScore = 1000;//the target score starts off at 1000pts and decreases
 	}
 	
 	// Update is called once per frame
@@ -19,8 +20,11 @@ public class ScoreManager : MonoBehaviour {
     /// </summary>
    public int TargetScore()
     {
-        int initialScore = 400;
-        initialScore -= 15;//the longer the user lets the target show, the more their points go down
+        initialScore -= 10;//the longer the user lets the target show, the more their points go down
+        if (initialScore <= 0)//can't minus points for not hitting it soon enough.
+        {
+            initialScore = 0;
+        }
         return initialScore;
     }
 
@@ -31,10 +35,15 @@ public class ScoreManager : MonoBehaviour {
     /// </summary>
    public int ScoreDecrease(int loseStreak)
     {
-        int baseLose = 20 * loseStreak;//the lose streak will increase each time the player presses the space when they shouldn't have
+        int baseLose = 50 * loseStreak;//the lose streak will increase each time the player presses the space when they shouldn't have
         return baseLose;
     }
 
+    public void ResetTargetScore()
+    {
+        //returing the base target points
+        initialScore = 1000;
+    }
 
     /// <summary>
     /// everytime the user doesn't press the spacebar when it isn't
@@ -44,7 +53,7 @@ public class ScoreManager : MonoBehaviour {
     /// <returns></returns>
     public int IncreaseOverTime(int winstreak)
     {
-        return 25 * winstreak;
+        return 60 * winstreak;
     }
 
 }

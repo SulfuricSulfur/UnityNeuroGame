@@ -9,8 +9,8 @@ public class TrialObject : MonoBehaviour {
     TrialSelect trialS;
     GameObject screenObj;//refrence to the canvas object
 	void Start () {
-        screenObj = GameObject.Find("Canvas");//getting refrence to canvas gameobject
-        trialS = screenObj.GetComponent<TrialSelect>();
+        //screenObj = GameObject.Find("Canvas");//getting refrence to canvas gameobject
+        //trialS = screenObj.GetComponent<TrialSelect>();
 	}
 	
 	// Update is called once per frame

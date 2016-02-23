@@ -33,10 +33,10 @@ public class ObjectSpawn : MonoBehaviour {
 
     private bool spacePressed;//tells if the space bar was pressed when the target comes up
 
-    private bool gameOver;//tells if the game is over.
-
     private int ballPoint;//the index of the ball list
 
+    private bool scoreTimer;//the score will increase the faster the user presses space. tells if the current object is up.
+    private int targetScore;//tells how much the user got from that target
 
     //showing score
     Text showScore;
@@ -64,7 +64,8 @@ public class ObjectSpawn : MonoBehaviour {
         //start off by chosing a target object from the array.
         index = Random.Range(0, 6);//choosing the index for the random object that will be the target
         target = spawnedObjs[index];//getting the target object 
-       // trialsLeft = this.GetComponent<TrialObject>().GameTrials();//the number of cycles there will be
+                                   
+        scoreTimer = false;
 
         trialSet = GameObject.Find("TrialSetter");
         trialsLeft = trialSet.GetComponent<TrialObject>().GameTrials();
@@ -72,6 +73,8 @@ public class ObjectSpawn : MonoBehaviour {
         starting = (GameObject)Instantiate(spawnedObjs[index], new Vector3(0, 0, 0), target.transform.rotation);
         scoring = this.GetComponent<ScoreManager>();
         loadedScene = false;
+
+        //changing UI for the scene
         hub = GameObject.Find("Canvas");
         scoreText = hub.GetComponent<Transform>().GetChild(0);
         shownTarget = hub.GetComponent<Transform>().GetChild(1);
@@ -88,15 +91,15 @@ public class ObjectSpawn : MonoBehaviour {
         ballRemove = false;
         spacePressed = false;
 
+        //the text components of the UI
         showScore = GetComponent<Text>();
         showT = GetComponent<Text>();
         wrongT = GetComponent<Text>();
         hitT = GetComponent<Text>();
 
+        //For sending the final score over to the final scene
         scoreHandle = GameObject.Find("ScoreHandle");
         sTrack = scoreHandle.GetComponent<ScoreTracker>();
-
-        gameOver = false;//game starts off true
     }
 	
 	// Update is called once per frame
@@ -210,6 +213,7 @@ public class ObjectSpawn : MonoBehaviour {
             }
             //Debug.Log(balls.Count);
             //refreshing the list
+           // Debug.Log(targetsIn);
             ballIndex.Clear();
         }
         ballPoint = 0;
@@ -219,16 +223,11 @@ public class ObjectSpawn : MonoBehaviour {
     public void SpawningObjects()
     {
 
-        if (ballPoint>= balls.Count)//as long as there are items to go through, keep displaying items
-        {
-            gameOver = true;
-            
-        }
         //will continue if the game is not over and there are objects left in the list and the game officially starts
-        else if (ballPoint < balls.Count && startDone==true )
+         if (ballPoint < balls.Count && startDone==true )
         {
       
-            if (time >= 3f)
+            if (time >= 3f)//every 3 seconds, spawn an object and restart the cycle
             {
   
                 time = 0f;
@@ -237,6 +236,10 @@ public class ObjectSpawn : MonoBehaviour {
                spacePressed = false;//resetting it so user can press space again
                 winStrkIncrease = false;//reset score increase;
                 //Debug.Log(balls.Count);
+                if(target == balls[ballPoint])
+                {
+                    scoreTimer = true;
+                }
             }
            else if (time >= 2f && ballRemove==true)
             {
@@ -245,14 +248,21 @@ public class ObjectSpawn : MonoBehaviour {
                 ballPoint++;
                 ballRemove = false;
 
-                Text tarText = hitTarget.GetComponent<Text>();
-                tarText.text = "";
-                Text tarText2 = wrongTarget.GetComponent<Text>();
-                tarText2.text = "";
+                hitT = hitTarget.GetComponent<Text>();
+                hitT.text = "";
+                wrongT = wrongTarget.GetComponent<Text>();
+                wrongT.text = "";
+                scoreTimer = false;//resetting the score timer bool once target goes away
+                scoring.ResetTargetScore();//reset the target points
             }
             if(score < 0)
             {
                 score = 0;//won't be able to drop lower than a score of 0
+            }
+            if(scoreTimer==true)
+            {
+                targetScore = scoring.TargetScore();
+                //Debug.Log(targetScore);
             }
             //if the space bar is pressed within the time the ball is on the screen
             if (Input.GetKey("space") && spacePressed == false && (time >= 0 && time <= 2))
@@ -260,20 +270,20 @@ public class ObjectSpawn : MonoBehaviour {
               
                 if ( balls[ballPoint]==target)//if it is the target and the space bar hasnt been pressed for that target yet.
                 {
-                    score += scoring.TargetScore();//will increase score when they press it(more if faster)
+                    score += targetScore;//will increase score when they press it(more if faster)
                     spacePressed = true;
                     //this is for telling the user the tart was hit
-                    Text tarText = hitTarget.GetComponent<Text>();
-                    tarText.text = "WOW! You hit a target!";
+                    hitT = hitTarget.GetComponent<Text>();
+                    hitT.text = "WOW! You hit a target!";
                 }
-                else if (currObj != target)
+                else if (currObj != target)//if user hits the wrong object
                 {
                     loseStreak++;
                     score -= scoring.ScoreDecrease(loseStreak);
                     spacePressed = true;
                     //this is for telling the user they hit the wrong user
-                    Text tarText = wrongTarget.GetComponent<Text>();
-                    tarText.text = "Woops! That is not the target!";
+                    wrongT = wrongTarget.GetComponent<Text>();
+                    wrongT.text = "Woops! That is not the target!";
                     winStrk = 0;//reset winStreak
                 }
                 
@@ -282,7 +292,7 @@ public class ObjectSpawn : MonoBehaviour {
             {
                 if(target == balls[ballPoint])//if user doesn't hit trarget, the winstreak resets
                 {
-                    winStrk = 0;
+                    winStrk = 0;//restart winstreak
                 }
                 else if(currObj != target)
                 {
