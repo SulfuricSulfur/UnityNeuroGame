@@ -48,7 +48,6 @@
      <Compile Include="Assets\Scripts\BackToMenu.cs" />
      <Compile Include="Assets\Scripts\FinalScript.cs" />
      <Compile Include="Assets\Scripts\ObjectSpawn.cs" />
-     <Compile Include="Assets\Scripts\ScoreDisplay.cs" />
      <Compile Include="Assets\Scripts\ScoreManager.cs" />
      <Compile Include="Assets\Scripts\ScoreTracker.cs" />
      <Compile Include="Assets\Scripts\StartMenu.cs" />

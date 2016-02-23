@@ -59,21 +59,20 @@ public class ObjectSpawn : MonoBehaviour {
 
         private int targetsIn = 0;//the number of targets that are in the cycle. There will
     private double avgSec=0;//the average score of the player
-
     void Start () {
 
-        //trialKeeper = GameObject.Find("TrialSetter");
-        //trialObj = trialKeeper.GetComponent<TrialObject>();
-
+ 
         //start off by chosing a target object from the array.
         index = Random.Range(0, 6);//choosing the index for the random object that will be the target
         target = spawnedObjs[index];//getting the target object 
                                    
         scoreTimer = false;
 
+        //setting up loading how many trials there will be
         trialSet = GameObject.Find("TrialSetter");
         trialsLeft = trialSet.GetComponent<TrialObject>().GameTrials();
-        //trialsLeft = 2;
+
+        //showing the starting target object
         starting = (GameObject)Instantiate(spawnedObjs[index], new Vector3(0, 0, 0), target.transform.rotation);
         scoring = this.GetComponent<ScoreManager>();
         loadedScene = false;
@@ -116,7 +115,6 @@ public class ObjectSpawn : MonoBehaviour {
             //Debug.Log(tempText);
             showScore.text = "Score: " + score;
             //showScore.text = "Score: " + score;
-
         }
         else if (ballPoint >= balls.Count && loadedScene == false)
         {
@@ -124,16 +122,21 @@ public class ObjectSpawn : MonoBehaviour {
             //send score to scoreHandler
             loadedScene = true;
             EndGame();
-
         }
 
-        if (startDone == false)
+        if (startDone == false)//telling the user that this is the target they want to look out for
         {
             Destroy(starting, timeSpawned);
             if(time >=0 && time <= 2)
             {
                 showT = shownTarget.GetComponent<Text>();
                 showT.text = "This is the target";
+            }
+            else if(time > 2)
+            {
+                //removing the text telling user that the object was the target
+                showT = shownTarget.GetComponent<Text>();
+                showT.text = "";
             }
 
         }
@@ -142,8 +145,7 @@ public class ObjectSpawn : MonoBehaviour {
             //once the starting target has despawned, the user will be able to hit the spacebar
             startDone = true;
             //  time = 0f;
-            showT = shownTarget.GetComponent<Text>();
-            showT.text = "";
+
         }
        
         SpawningObjects();
@@ -206,7 +208,7 @@ public class ObjectSpawn : MonoBehaviour {
                     }
                         
                     }
-                    else
+                    else//adding the ball object to the balls list and also to the ballIndex list to later check if there is already that ball in the cycle
                     {
                         balls.Add(GO);
                     ballIndex.Add(GO);
@@ -214,7 +216,6 @@ public class ObjectSpawn : MonoBehaviour {
             }
             //Debug.Log(balls.Count);
             //refreshing the list
-           // Debug.Log(targetsIn);
             ballIndex.Clear();
         }
         ballPoint = 0;
@@ -294,6 +295,7 @@ public class ObjectSpawn : MonoBehaviour {
                 }
                 
             }
+            //if the space wasn't pressed on the target, then the winstreak will be broken
             else if(Input.GetKey("space") != true && time >= 2 && winStrkIncrease == false && spacePressed==false)
             {
                 if(target == balls[ballPoint])//if user doesn't hit trarget, the winstreak resets
@@ -332,11 +334,11 @@ public class ObjectSpawn : MonoBehaviour {
     /// <summary>
     /// The game has ended.
     /// Moving scene to the final one.
+    /// Also showing the user their average reaction score
     /// </summary>
     public void EndGame()
     {
-
-        avgSec = avgSec / (targetsIn );
+       avgSec = avgSec / (targetsIn );
         sTrack.SetScore(score);
         sTrack.SetAverage(avgSec);//the average score
         sTrack.SetNumTargets(targetsIn);

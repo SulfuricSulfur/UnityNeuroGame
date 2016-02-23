@@ -10,6 +10,9 @@ public class BackToMenu : MonoBehaviour {
 	
 	}
 
+    /// <summary>
+    /// taking the user back to the main menu
+    /// </summary>
 	public void ReturnToMenu()
     {
         Application.LoadLevel("Main");
