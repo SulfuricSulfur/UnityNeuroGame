@@ -7,7 +7,7 @@ public class FinalScript : MonoBehaviour {
 
     // Use this for initialization
     //this is for displaying the final score
-    public int finalScore;
+    private int finalScore;
     GameObject scoreSet;
     public GameObject hub;
     Transform scoring;
@@ -17,15 +17,17 @@ public class FinalScript : MonoBehaviour {
 
 	void Start () {
         scoreSet = GameObject.Find("ScoreHandle");
-        finalScore = scoreSet.GetComponent<ObjectSpawn>().ShowingScore();//displaying score
+        finalScore = scoreSet.GetComponent<ScoreTracker>().ShowingScore();//displaying score
         hub = GameObject.Find("Canvas");
         scoring = hub.GetComponent<Transform>().GetChild(0);
         //scoreText = GetComponent<Text>();
-	}
+
+        Text tempT = scoring.GetComponent<Text>();
+        tempT.text = "Good work! Your final score is: " + finalScore;
+    }
 	
 	// Update is called once per frame
 	void Update () {
-        Text temp = scoring.GetComponent<Text>();
-        temp.text = "Good work! Your final score is: " + finalScore;
-	}
+       
+    }
 }

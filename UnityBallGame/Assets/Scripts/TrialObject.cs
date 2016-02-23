@@ -15,7 +15,6 @@ public class TrialObject : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        numTrials = trialS.SendTrial();
     }
 
     public int GameTrials()
@@ -28,5 +27,10 @@ public class TrialObject : MonoBehaviour {
     void Awake()
     {
         DontDestroyOnLoad(this);
+    }
+
+    public void GetTrials(int numT)//gets the number of trials from trialSelect
+    {
+        numTrials = numT;
     }
 }

@@ -32,10 +32,10 @@ public class ObjectSpawn : MonoBehaviour {
     private int loseStreak;//how many times the player has pressed space when it was not the target
 
     private bool spacePressed;//tells if the space bar was pressed when the target comes up
-                              //public GameObject trialKeeper;//refrence to the object that holds the number of trials
-                              //private TrialObject trialObj;//refrence to the trialObject script
 
     private bool gameOver;//tells if the game is over.
+
+    private int ballPoint;//the index of the ball list
 
 
     //showing score
@@ -48,6 +48,10 @@ public class ObjectSpawn : MonoBehaviour {
     List<GameObject> balls = new List<GameObject>();
 
     GameObject trialSet;//trialsetter gameobject
+
+    //refrence to the scorehandling object
+    GameObject scoreHandle;
+    ScoreTracker sTrack;
 
 	// Use this for initialization
 	void Start () {
@@ -87,18 +91,32 @@ public class ObjectSpawn : MonoBehaviour {
         wrongT = GetComponent<Text>();
         hitT = GetComponent<Text>();
 
+        scoreHandle = GameObject.Find("ScoreHandle");
+        sTrack = scoreHandle.GetComponent<ScoreTracker>();
 
         gameOver = false;//game starts off true
     }
 	
 	// Update is called once per frame
 	void Update () {
-        time += Time.deltaTime;
-        //Debug.Log(scoreText);
-        Text tempText = scoreText.GetComponent<Text>();
-        //Debug.Log(tempText);
-        tempText.text = "Score: " + score;
-        //showScore.text = "Score: " + score;
+        if (ballPoint < balls.Count)
+        {
+            time += Time.deltaTime;
+            //Debug.Log(scoreText);
+            showScore = scoreText.GetComponent<Text>();
+            //Debug.Log(tempText);
+            showScore.text = "Score: " + score;
+            //showScore.text = "Score: " + score;
+
+        }
+        else if (ballPoint >= balls.Count)
+        {
+            //game over code
+            //send score to scoreHandler
+            sTrack.SetScore(score);
+            Application.LoadLevel("FinishGame");
+        }
+
         if (startDone == false)
         {
             Destroy(starting, timeSpawned);
@@ -114,22 +132,12 @@ public class ObjectSpawn : MonoBehaviour {
             //once the starting target has despawned, the user will be able to hit the spacebar
             startDone = true;
             //  time = 0f;
-            Text tarText = shownTarget.GetComponent<Text>();
-            tarText.text = "";
+            showT = shownTarget.GetComponent<Text>();
+            showT.text = "";
         }
-        //Debug.Log(time);
-        //while the game is going, display the objects
-        if (gameOver == false)
-        {
+       
+        SpawningObjects();
 
-            SpawningObjects();
-        }
-        else if (gameOver == true)
-        {
-            //game over code
-            Application.LoadLevel("FinishGame");
-        }
-        
     }
 
     public int FinalScore()
@@ -159,8 +167,6 @@ public class ObjectSpawn : MonoBehaviour {
                 //adding a random object in
                 int pos = Random.Range(0, spawnedObjs.Length);
                 GameObject GO = spawnedObjs[pos];
-                // while (balls.Contains())
-                //ballIndex.Add(pos);
                 
                 while (ballIndex.Contains(GO))//if there is already that ball in a cycle then choose another number
                 {
@@ -203,54 +209,53 @@ public class ObjectSpawn : MonoBehaviour {
             //refreshing the list
             ballIndex.Clear();
         }
+        ballPoint = 0;
     }
 
     //used for spawning in the object
     public void SpawningObjects()
     {
 
-
-        //Debug.Log("HERE I AM");
-        if (balls.Count <= 0)
+        if (ballPoint>= balls.Count)//as long as there are items to go through, keep displaying items
         {
             gameOver = true;
             
         }
-        else if (balls.Count > 0 && gameOver==false && startDone==true )
+        //will continue if the game is not over and there are objects left in the list and the game officially starts
+        else if (ballPoint < balls.Count && startDone==true )
         {
       
-            //Debug.Log("COUNT WORKS");
             if (time >= 3f)
             {
-                //Debug.Log("IN THE 3");
+  
                 time = 0f;
-                currObj = (GameObject)Instantiate(balls[0], new Vector3(0, 0, 0), balls[0].transform.rotation);
+                currObj = (GameObject)Instantiate(balls[ballPoint], new Vector3(0, 0, 0), balls[ballPoint].transform.rotation);
                 ballRemove = true;
                spacePressed = false;//resetting it so user can press space again
                 winStrkIncrease = false;//reset score increase;
-                Debug.Log(balls.Count);
+                //Debug.Log(balls.Count);
             }
            else if (time >= 2f && ballRemove==true)
             {
                 //spacePressed = false; 
                 Destroy(currObj);
-                balls.Remove(balls[0]);//removing the first object in the list and shifting the other objects down
+                ballPoint++;
                 ballRemove = false;
-                //Debug.Log("STUFF 2");
-                //resetting textboxes
+
                 Text tarText = hitTarget.GetComponent<Text>();
                 tarText.text = "";
                 Text tarText2 = wrongTarget.GetComponent<Text>();
                 tarText2.text = "";
             }
-
+            if(score < 0)
+            {
+                score = 0;//won't be able to drop lower than a score of 0
+            }
             //if the space bar is pressed within the time the ball is on the screen
             if (Input.GetKey("space") && spacePressed == false && (time >= 0 && time <= 2))
             {
-               // Debug.Log("WE'RE HERE");
-                // if (spacePressed == false)//if the spacebar has not been pressed yet for that ball
-                //{
-                if (spawnedObjs[index] == balls[0])//if it is the target and the space bar hasnt been pressed for that target yet.
+              
+                if ( balls[ballPoint]==target)//if it is the target and the space bar hasnt been pressed for that target yet.
                 {
                     score += scoring.TargetScore();//will increase score when they press it(more if faster)
                     spacePressed = true;
@@ -269,11 +274,10 @@ public class ObjectSpawn : MonoBehaviour {
                     winStrk = 0;//reset winStreak
                 }
                 
-                //}
             }
             else if(Input.GetKey("space") != true && time >= 2 && winStrkIncrease == false && spacePressed==false)
             {
-                if(target == balls[0])//if user doesn't hit trarget, the winstreak resets
+                if(target == balls[ballPoint])//if user doesn't hit trarget, the winstreak resets
                 {
                     winStrk = 0;
                 }

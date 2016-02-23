@@ -6,17 +6,17 @@ public class ScoreTracker : MonoBehaviour {
     // Use this for initialization
 
     private int score;
-    ObjectSpawn spwnObj;//calling refrence to the score
-    GameObject gameScore;//game object of the thing that has the score refrence
+    //ObjectSpawn spwnObj;//calling refrence to the score
+    //GameObject gameScore;//game object of the thing that has the score refrence
     void Start () {
-        gameScore = GameObject.Find("GameObjManager");
-        spwnObj = gameScore.GetComponent<ObjectSpawn>();
+       // gameScore = GameObject.Find("GameObjManager");
+        //spwnObj = gameScore.GetComponent<ObjectSpawn>();
         
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        score = spwnObj.FinalScore();//passing in the score.
+        //score = spwnObj.FinalScore();//passing in the score.
     }
 
     /// <summary>
@@ -31,5 +31,10 @@ public class ScoreTracker : MonoBehaviour {
     void Awake()
     {
         DontDestroyOnLoad(this);
+    }
+
+    public void SetScore(int gameScore)
+    {
+        score = gameScore;
     }
 }
