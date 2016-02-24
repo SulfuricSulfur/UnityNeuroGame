@@ -234,7 +234,7 @@ public class ObjectSpawn : MonoBehaviour {
       
             if (time >= 3f)//every 3 seconds, spawn an object and restart the cycle
             {
-  
+                ballPoint++;
                 time = 0f;
                 currObj = (GameObject)Instantiate(balls[ballPoint], new Vector3(0, 0, 0), balls[ballPoint].transform.rotation);
                 ballRemove = true;
@@ -250,7 +250,6 @@ public class ObjectSpawn : MonoBehaviour {
             {
                 //spacePressed = false; 
                 Destroy(currObj);
-                ballPoint++;
                 ballRemove = false;
 
                 hitT = hitTarget.GetComponent<Text>();
@@ -296,11 +295,12 @@ public class ObjectSpawn : MonoBehaviour {
                 
             }
             //if the space wasn't pressed on the target, then the winstreak will be broken
-            else if(Input.GetKey("space") != true && time >= 2 && winStrkIncrease == false && spacePressed==false)
+            else if(time > 2 && winStrkIncrease == false && spacePressed==false)
             {
-                if(target == balls[ballPoint])//if user doesn't hit trarget, the winstreak resets
+                if(balls[ballPoint] == target)//if user doesn't hit trarget, the winstreak resets
                 {
                     winStrk = 0;//restart winstreak
+                    winStrkIncrease = true;
                 }
                 else if(currObj != target)
                 {

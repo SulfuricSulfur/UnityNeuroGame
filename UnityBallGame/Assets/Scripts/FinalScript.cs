@@ -37,7 +37,7 @@ public class FinalScript : MonoBehaviour {
         scoreText.text = "Good work! Your final score is: " + finalScore;
 
         statText = stats.GetComponent<Text>();
-        statText.text = "Out of " + targets + " target(s), your average score from reacting to the target was " + average + " points!";
+        statText.text = "Out of " + targets + " target(s), your average score from reacting to the target(s) was " + average + " points!";
 
     }
 	

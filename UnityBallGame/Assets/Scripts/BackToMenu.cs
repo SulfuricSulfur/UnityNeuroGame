@@ -17,4 +17,11 @@ public class BackToMenu : MonoBehaviour {
     {
         Application.LoadLevel("Main");
     }
+
+
+    //Quitting the game
+     public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
